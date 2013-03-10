@@ -1,6 +1,10 @@
 # includeme.el --- Automatic C/C++ '#include' and 'using' in Emacs
 # Copyright (c) 2013 Justine Tunney
 
+# This file is responsible for pulling data about standard functions and
+# headers from as many sources as possible (like man pages and
+# cppreference.com) and assembling it all into a precomputed lisp binary tree.
+
 import gzip
 import itertools
 import operator
@@ -38,46 +42,20 @@ shadows = {
 }
 
 
-def make_happy_tree(out, syms):
-    """Output lisp balanced binary tree for name / headers pairs.
-
-    Function names are strings because we need to compare them in lisp code,
-    but the header names are atoms to save on memory since they're repeated
-    often and lisp atoms are essentially flyweight strings.
-
-    Tree node structure::
-
-        pointer node   => '(("log" . std::log) l . r)
-        canonical node => '(("std::log" cmath) l . r)
-
-        (setq node '(("log10f" cmath bmath) left . right))
-        (caar node) => "log10f"
-        (cdar node) => (cmath bmath)
-        (cadr node) => left
-        (cddr node) => right
-
-    """
+def make_happy_list(out, syms):
+    """Outputs a list that gets turned into a btree by emacs."""
     syms.sort(key=operator.itemgetter(0))
-    out.write("'")
-    def do_node(start, end):
-        if start == end:
-            out.write('nil')
-            return
-        pivot = start + (end - start) / 2
-        name, hdrs = syms[pivot]
+    out.write('(setq includeme! \'(\n')
+    for name, hdrs in syms:
         if isinstance(hdrs, basestring):
-            canonical_name = hdrs
-            out.write('(("%s" . %s)\n' % (name, canonical_name))
+            out.write('("%s" . "%s")\n' % (name, hdrs))
         else:
-            out.write('(("%s" %s)\n' % (name, " ".join(hdrs)))
-        do_node(start, pivot)
-        out.write(' . ')
-        do_node(pivot + 1, end)
-        out.write(')')
-    do_node(0, len(syms))
+            out.write('("%s" %s)\n' % (name, " ".join(hdrs)))
+    out.write('))\n')
 
 
 def get_mans(level=3, root='/usr/share/man'):
+    """Yields ``(abs-path, file-obj)`` for each man in root."""
     root = os.path.join(root, 'man%d' % (level))
     for name in os.listdir(root):
         path = os.path.join(root, name)
@@ -88,6 +66,7 @@ def get_mans(level=3, root='/usr/share/man'):
 
 
 def parse_man(path, text):
+    """Reads raw man page text and yields ``(func-name, [headers])`` pairs."""
     includes = set()
     for line in text:
         if line.startswith('.B ') or line.startswith('.BR "#inc'):
@@ -217,6 +196,7 @@ def main(cppdir):
     c_syms = dict(filter_syms('C', c_syms))
     cpp_syms = dict(filter_syms('C++', cpp_syms))
 
+    # Display some countage.
     print "len(c_syms) =", len(c_syms)
     print "len(cpp_syms) =", len(cpp_syms)
     print "len(man_syms) =", len(man_syms)
@@ -240,13 +220,21 @@ def main(cppdir):
             else:
                 cpp_syms[short_name] = name
 
-    # Output balanced binary tree lisp data structures.
+    # Manual adjustments to annoying problems.
+    cpp_syms['std::cin'] = ['iostream']
+    cpp_syms['std::cout'] = ['iostream']
+    cpp_syms['std::cerr'] = ['iostream']
+    cpp_syms['std::clog'] = ['iostream']
+    cpp_syms['std::wcin'] = ['iostream']
+    cpp_syms['std::wcout'] = ['iostream']
+    cpp_syms['std::wcerr'] = ['iostream']
+    cpp_syms['std::wclog'] = ['iostream']
+
+    # Output a data structure for emacs.
     for name, syms in [('includeme-index-c', c_syms),
                        ('includeme-index-cpp', cpp_syms)]:
         out = open(name + '.el', 'w')
-        out.write('(setq ' + name + ' ')
-        make_happy_tree(out, syms.items())
-        out.write(')\n')
+        make_happy_list(out, syms.items())
 
 if __name__ == '__main__':
     main(*sys.argv[1:])

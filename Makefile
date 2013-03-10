@@ -3,7 +3,8 @@
 
 REFDATE ?= 20121202
 
-all: includeme.elc includeme-index-c.elc includeme-index-cpp.elc
+all: includeme.elc
+dev: all index README.md
 
 check: includeme.elc includeme-tests.elc
 	emacs --batch -l ert -l includeme-tests -f ert-run-tests-batch-and-exit
@@ -11,8 +12,6 @@ check: includeme.elc includeme-tests.elc
 clean:
 	rm -f *.elc
 
-includeme-index-c.el: index
-includeme-index-cpp.el: index
 index:
 	python generate.py cppreference-doc-$(REFDATE)
 
@@ -23,7 +22,7 @@ fetch:
 README.md: make-readme-markdown.el
 	emacs --script $< <includeme.el >$@ 2>/dev/null
 make-readme-markdown.el:
-	wget -q -O $@ https://raw.github.com/jart/make-readme-markdown/master/make-readme-markdown.el
+	wget -q -O $@ https://raw.github.com/mgalgs/make-readme-markdown/master/make-readme-markdown.el
 .INTERMEDIATE: make-readme-markdown.el
 
 %.elc: %.el

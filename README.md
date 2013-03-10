@@ -5,8 +5,8 @@ includeme is an extension for GNU Emacs that will automatically insert
 '#include' and 'using' statements into your source code while you write
 C/C++ and it's 100% guaranteed to actually work. For instance if you started
 writing a new C++ program and typed `cout` and then pressed `C-c C-h`,
-includeme would then insert `#include <stdio>` and `using std::cout` at the
-top of your file in comformance with Google C++ style requirements.
+includeme would then insert `#include <iostream>` and `using std::cout` at
+the top of your file in comformance with Google C++ style requirements.
 
 So what's the catch? It only works for popular and standardized APIs. No
 attempt is made whatsoever to run static analysis tools on your codebase.
@@ -29,6 +29,16 @@ Run `make` and put this stuff in your `~/.emacs` file:
 
 Function Documentation
 ----------------------
+
+### `(includeme)`
+
+Insert headers and using statements necessary to for name
+under cursor to compile.
+
+For example if you type "std::cout" and run this command in a
+C++ buffer, includeme will insert `#include <iostream>` at the
+top of your buffer. If you had only typed "cout" then includeme
+would have also inserted a `using std::cout` statement.
 
 -----
 <div style="padding-top:15px;color: #d0d0d0;">
