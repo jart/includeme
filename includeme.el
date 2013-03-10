@@ -1,4 +1,4 @@
-;;; includeme.el --- Automatic C/C++ '#include' and 'using' in Emacs
+;;; includeme.el --- Auto C/C++ '#include' and 'using' in Emacs
 
 ;; Copyright (C) 2013 Justine Tunney.
 
