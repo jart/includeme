@@ -44,7 +44,7 @@
 
 ;;; Installation:
 
-;; Run `make` and put this stuff in your init file:
+;; Put this stuff in your init file:
 ;;
 ;;     (add-to-list 'load-path "/PATH/TO/INCLUDEME")
 ;;     (require 'includeme)

@@ -3,11 +3,7 @@
 
 REFDATE ?= 20121202
 
-all: includeme.elc
-dev: all index README.md
-
-clean:
-	rm -f *.elc
+dev: index README.md
 
 index:
 	python generate.py cppreference-doc-$(REFDATE)
@@ -22,7 +18,4 @@ make-readme-markdown.el:
 	wget -q -O $@ https://raw.github.com/mgalgs/make-readme-markdown/master/make-readme-markdown.el
 .INTERMEDIATE: make-readme-markdown.el
 
-%.elc: %.el
-	emacs --batch --eval '(byte-compile-file "$<")'
-
-.PHONY: index clean README.md
+.PHONY: index README.md
