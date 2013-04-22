@@ -6,9 +6,6 @@ REFDATE ?= 20121202
 all: includeme.elc
 dev: all index README.md
 
-check: includeme.elc includeme-tests.elc
-	emacs --batch -l ert -l includeme-tests -f ert-run-tests-batch-and-exit
-
 clean:
 	rm -f *.elc
 
@@ -28,4 +25,4 @@ make-readme-markdown.el:
 %.elc: %.el
 	emacs --batch --eval '(byte-compile-file "$<")'
 
-.PHONY: index check clean README.md
+.PHONY: index clean README.md
