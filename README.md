@@ -1,6 +1,8 @@
 includeme.el – Auto C/C++ '#include' and 'using' in Emacs
 =========================================================
 
+**Demo Video: <http://www.youtube.com/watch?v=vhs5r-iGpNU>**
+
 includeme is an extension for GNU Emacs that will automatically insert
 '#include' and 'using' statements into your source code while you write
 C/C++ and it's 100% guaranteed to actually work. For instance if you started
