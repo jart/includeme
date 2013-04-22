@@ -4,30 +4,26 @@ includeme.el – Auto C/C++ '#include' and 'using' in Emacs
 **Demo Video: <http://www.youtube.com/watch?v=vhs5r-iGpNU>**
 
 includeme is an extension for GNU Emacs that will automatically insert
-'#include' and 'using' statements into your source code while you write
+    #include
 C/C++ and it's 100% guaranteed to actually work. For instance if you started
-writing a new C++ program and typed `cout` and then pressed `C-c C-h`,
+writing a new C++ program and typed `cout` and then pressed the magic key,
 includeme would then insert `#include <iostream>` and `using std::cout` at
-the top of your file in comformance with Google C++ style requirements.
+the top of your file.
 
-So what's the catch? It only works for popular and standardized APIs. No
-attempt is made whatsoever to run static analysis tools on your codebase.
-includeme comes preprogrammed with an efficient lisp binary tree of all the
-symbol and header definitions for libraries deemed important by Justine
-Tunney. Things like POSIX, the Standard C Library, C++ STL, etc.
+So what's the catch? It only works for popular and standardized
+APIs. No attempt is made whatsoever to analyse your code. includeme
+comes with a database of all the symbol and header definitions for
+libraries deemed important by Justine Tunney. Things like POSIX,
+the Standard C Library, C++ STL, etc.
 
 Installation
 ------------
 
-Run `make` and put this stuff in your `~/.emacs` file:
+Run `make` and put this stuff in your init file:
 
-    (eval-after-load 'cc-mode
-      '(progn
-         (add-to-list 'load-path "/PATH/TO/INCLUDEME")
-         (require 'includeme)
-         (defun my-c-mode-common-hook ()
-           (define-key c-mode-base-map (kbd "C-c C-h") 'includeme))
-         (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)))
+    (add-to-list 'load-path "/PATH/TO/INCLUDEME")
+    (require 'includeme)
+    (define-key c-mode-base-map (kbd "C-c i") 'includeme)
 
 Function Documentation
 ----------------------
