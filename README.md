@@ -1,10 +1,14 @@
-includeme.el – Auto C/C++ '#include' and 'using' in Emacs
-=========================================================
+<a href="https://github.com/jart/includeme"><img src="https://www.gnu.org/software/emacs/images/emacs.png" alt="Emacs Logo" width="80" height="80" align="right"></a>
+## includeme.el
+*Auto C/C++ '#include' and 'using' in Emacs*
+
+---
+[![License GPLv2](https://img.shields.io/badge/license-GPL_v2-green.svg)](http://www.gnu.org/licenses/gpl-2.0.html)
 
 **Demo Video: <http://www.youtube.com/watch?v=vhs5r-iGpNU>**
 
 includeme is an extension for GNU Emacs that will automatically insert
-    #include
+`#include` and `using` statements into your source code while you write
 C/C++ and it's 100% guaranteed to actually work. For instance if you started
 writing a new C++ program and typed `cout` and then pressed the magic key,
 includeme would then insert `#include <iostream>` and `using std::cout` at
@@ -16,23 +20,47 @@ comes with a database of all the symbol and header definitions for
 libraries deemed important by Justine Tunney. Things like POSIX,
 the Standard C Library, C++ STL, etc.
 
-Installation
-------------
+### Installation
 
-Run `make` and put this stuff in your init file:
+
+Put this stuff in your init file:
 
     (add-to-list 'load-path "/PATH/TO/INCLUDEME")
     (require 'includeme)
     (define-key c-mode-base-map (kbd "C-c i") 'includeme)
 
-Function Documentation
-----------------------
 
-### `(includeme)`
+
+### Customization Documentation
+
+#### `includeme-indexes`
+
+An alist of files for each mode containing symbol/headers tables.
+
+You can use this variable to add your own symbol tables. Here's
+an example of how to do it: Create "my-proj-headers.el"
+somewhere on your emacs load path with the code below. Once
+that's done you must customize the variable (M-x
+customize-variable) `includeme-indexes` to add the name of your
+file to the list for your mode (in this case, c++-mode). Then run
+`includeme-reload`.
+
+    ;; my-proj-headers.el
+    (setq includeme! '(
+      ("my_proj_func1" my_proj/funcs.h)  ;; Function with one header.
+      ("my_proj_func2" my_proj/funcs.h)
+      ("lol::MyClass" lol/MyClass.h lol/class_defs.h)  ;; Two headers.
+      ("MyClass" . "lol::MyClass")  ;; Use that dot for canonical names.
+      ;; etc...
+    ))
+
+
+### Function and Macro Documentation
+
+#### `(includeme)`
 
 Insert headers and using statements necessary to for name
 under cursor to compile.
-
 For example if you type "std::cout" and run this command in a
 C++ buffer, includeme will insert `#include <iostream>` at the
 top of your buffer. If you had only typed "cout" then includeme
